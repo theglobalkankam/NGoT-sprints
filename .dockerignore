@@ -1,0 +1,35 @@
+# .dockerignore 
+# Save this as: eta-predictor/.dockerignore 
+  
+# Python bytecode and caches 
+__pycache__/ 
+*.pyc 
+*.pyo 
+*.pyd 
+.Python 
+  
+# Virtual environments (we don't need these — Docker builds its own) 
+.venv/ 
+venv/ 
+env
+# Version control 
+.git/ 
+.gitignore 
+  
+# Development files (not needed in production) 
+*.md 
+tests/ 
+.pytest_cache/ 
+  
+# ML artifacts (we will mount these as volumes instead) 
+mlruns/ 
+data/ 
+  
+# Environment files (NEVER include secrets in images!) 
+.env 
+*.env 
+  
+# Editor config 
+.vscode/ 
+.idea/ 
+*.log 

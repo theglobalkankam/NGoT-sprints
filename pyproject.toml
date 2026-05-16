@@ -1,0 +1,40 @@
+[project]
+name = "eta-predictor"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "theglobalkankam",email = "yvonneadjeikankam@gmail.com"}
+]
+
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "uvicorn[standard] (>=0.47.0,<0.48.0)",
+    "scikit-learn (>=1.8.0,<2.0.0)",
+    "mlflow (>=3.11.1,<4.0.0)",
+   
+    "pandas (==2.3.3)",
+    "matplotlib (>=3.10.9,<4.0.0)",
+    "numpy (>=2.4.5,<3.0.0)",
+    "pydantic (>=2.13.4,<3.0.0)",
+    "joblib (>=1.5.3,<2.0.0)",
+    "fastapi (>=0.136.1,<0.137.0)",
+    "dvc (>=3.67.1,<4.0.0)"
+
+]
+
+[tool.poetry]
+packages = [{include = "eta_predictor", from = "src"}]
+version = " 2.3.4"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.3,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "black (>=26.5.0,<27.0.0)",
+    "ruff (>=0.15.13,<0.16.0)"
+]

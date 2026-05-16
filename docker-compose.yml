@@ -1,0 +1,59 @@
+# Defines both our API service and MLflow tracking server
+
+
+
+services:
+  # ── Service 1: Our ETA Prediction API ────────────────────────────
+  eta-api:
+    build:
+      context: . # Build from current directory
+      dockerfile: Dockerfile # Using our Dockerfile
+      target: runtime # Use the 'runtime' stage (not builder)
+    image: eta-predictor:latest
+    container_name: eta-predictor-api
+    ports:
+      - "8000:8000" # host:container — access at localhost:8000
+    volumes:
+      # Mount the models/ folder — so the container can read model files
+      # ':ro' means read-only — the container cannot write to this folder
+      - ./models:/app/models:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s # Give app 20s to start before checking
+    restart: unless-stopped # Restart automatically if it crashes
+    depends_on:
+      - mlflow-server # Wait for MLflow to start first
+    networks:
+      - sprint-network
+
+  # ── Service 2: MLflow Tracking Server ────────────────────────────
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: mlflow-tracking
+    command: >
+      bash -c 'pip install mlflow[extras] && mlflow server
+        --host 0.0.0.0
+        --port 5000
+        --backend-store-uri sqlite:////mlflow/mlflow.db
+        --default-artifact-root /mlflow/artifacts'
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow-data:/mlflow # Persistent storage for MLflow data
+    networks:
+      - sprint-network
+    restart: unless-stopped
+
+# ── Volumes ───────────────────────────────────────────────────────
+volumes:
+  mlflow-data: # Docker-managed volume for MLflow database + artifacts
+
+# ── Networks ──────────────────────────────────────────────────────
+networks:
+  sprint-network:
+    driver: bridge # Default bridge network — containers can talk to each other
